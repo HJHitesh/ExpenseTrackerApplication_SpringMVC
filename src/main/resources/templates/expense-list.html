@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px #ddd;
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .chart-container {
+            width: 80%;
+            margin: 40px auto;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 10px 0;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Expense List</h2>
+        <a href="/expenses/add-expense" class="btn">Add Expense</a>
+
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            <tr th:each="expense : ${expenses}">
+                <td th:text="${expense.description}"></td>
+                <td th:text="${expense.amount}"></td>
+                <td th:text="${expense.category}"></td>
+                <td th:text="${expense.date}"></td>
+                <td>
+                    <a th:href="@{/edit-expense/{id}(id=${expense.id})}" class="btn">Edit</a>
+                    <a th:href="@{/delete-expense/{id}(id=${expense.id})}" class="btn" style="background-color: #dc3545;">Delete</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="chart-container">
+        <h2>Expense Breakdown</h2>
+        <canvas id="expenseChart"></canvas>
+    </div>
+
+    <script>
+        const expenseData = /*[[${expenses}]]*/ [];
+        const categories = {};
+        
+        expenseData.forEach(expense => {
+            const category = expense.category;
+            categories[category] = (categories[category] || 0) + expense.amount;
+        });
+
+        const categoryLabels = Object.keys(categories);
+        const categoryValues = Object.values(categories);
+
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Expenses by Category',
+                    data: categoryValues,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#FF9800', '#9C27B0'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

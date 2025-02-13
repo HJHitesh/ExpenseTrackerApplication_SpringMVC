@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Expense</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px #ddd;
+            border-radius: 8px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 15px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Edit Expense</h2>
+        <form th:action="@{/expenses/edit-expense/{id}(id=${expense.id})}" th:object="${expense}" method="post">
+            <label>Description:</label>
+            <input type="text" th:field="*{description}" required />
+            
+            <label>Amount:</label>
+            <input type="number" th:field="*{amount}" step="0.01" required />
+            
+            <label>Category:</label>
+            <select th:field="*{category}">
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Bills">Bills</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Entertainment">Entertainment</option>
+            </select>
+            
+            <label>Date:</label>
+            <input type="date" th:field="*{date}" required />
+            
+            <button type="submit" class="btn">Update Expense</button>
+        </form>
+    </div>
+
+</body>
+</html>
