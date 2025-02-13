@@ -13,18 +13,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/register", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/expenses", true)  // Redirect to expense list page after login
-                .failureUrl("/login?error=true") // Redirect to login with error message on failure
+                .defaultSuccessUrl("/expenses", true)  // Redirect to /expenses after login
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true") // Ensure proper logout handling
+                .logoutSuccessUrl("/login?logout=true") // Redirect to login after logout
                 .permitAll()
             )
             .csrf(csrf -> csrf.disable()); // Disable CSRF for development (Enable in production)
